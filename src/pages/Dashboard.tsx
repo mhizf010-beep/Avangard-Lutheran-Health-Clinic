@@ -6,6 +6,22 @@ interface Patient {
   patient_name: string;
   service: string;
   created_at: string;
+
+export default function Dashboard({ region }: { region: 'usa' | 'brazil' }) {
+  // 1. PLACE THE SHIELD HERE
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/login'; 
+      }
+    };
+    checkUser();
+  }, []);
+
+  // 2. Then keep your existing patient fetch logic below it...
+  const [livePatients, setLivePatients] = useState<Patient[]>([]);
+  // ... (rest of the code)
 }
 
 export default function Dashboard({ region }: { region: 'usa' | 'brazil' }) {
