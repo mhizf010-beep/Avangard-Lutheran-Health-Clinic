@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 25% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 17%;
+    --primary: 207 65% 33%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 215 25% 17%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 207 65% 33%;
+    --radius: 0.5rem;
+    
+    --lutheran-blue: #003366;
+    --lutheran-light-blue: #0066CC;
+    --lutheran-green: #4A7C59;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer components {
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  
+  .btn-primary {
+    @apply bg-[#003366] hover:bg-[#002244] text-white font-semibold px-6 py-3 rounded transition-all duration-300;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#4A7C59] hover:bg-[#3d6549] text-white font-semibold px-6 py-3 rounded transition-all duration-300;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-[#003366] text-[#003366] hover:bg-[#003366] hover:text-white font-semibold px-6 py-3 rounded transition-all duration-300;
+  }
+  
+  .card-shadow {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+  }
+  
+  .page-header {
+    @apply bg-gradient-to-r from-[#003366] to-[#0066CC] text-white py-16;
+  }
+}

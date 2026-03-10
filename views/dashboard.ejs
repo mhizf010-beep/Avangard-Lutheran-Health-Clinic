@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f8fafc; color: #334155; }
+        .nav { background: #003366; color: white; padding: 15px; text-align: center; }
+        .tagline { font-size: 12px; font-style: italic; opacity: 0.8; }
+        .container { padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border-left: 5px solid #003366; }
+        .info { margin-bottom: 10px; font-size: 14px; }
+        .label { font-weight: bold; color: #64748b; text-transform: uppercase; font-size: 11px; }
+        .logout { display: inline-block; margin-top: 20px; color: #ef4444; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <h1>Avangard Clinic</h1>
+        <div class="tagline"><%= tagline %></div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h2><%= lang === 'pt' ? 'Bem-vindo' : 'Welcome' %>, <%= doctor %></h2>
+            
+            <div class="info"><span class="label"><%= lang === 'pt' ? 'Especialidade' : 'Specialty' %>:</span><br><%= specialty %></div>
+            <div class="info"><span class="label"><%= lang === 'pt' ? 'Localização' : 'Location' %>:</span><br><%= location %></div>
+            <div class="info"><span class="label">Email:</span><br><%= email %></div>
+
+            <a href="/admin" class="logout"><%= lang === 'pt' ? 'Sair do Sistema' : 'Logout System' %></a>
+        </div>
+    </div>
+</body>
+</html>
+
+
