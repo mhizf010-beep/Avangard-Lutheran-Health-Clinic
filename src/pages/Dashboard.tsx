@@ -14,6 +14,17 @@ export default function Dashboard({ region }: { region: 'usa' | 'brazil' }) {
   const [livePatients, setLivePatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
 
+const markComplete = async (id) => {
+  const { error } = await supabase
+    .from('appointments')
+    .update({ status: 'completed' })
+    .eq('id', id);
+
+  if (!error) {
+    // Refresh the list locally so the patient disappears immediately
+    setLivePatients(prev => prev.filter(appt => appt.id !== id));
+  }
+};
   const [profile, setProfile] = useState({
     name: isUSA ? "Dr. Michael Kelvin" : "Dr. Lucas Felix Rossi",
     email: isUSA ? "michaellkevin9@gmail.com" : "derojulie@clinic.br",
@@ -38,7 +49,12 @@ export default function Dashboard({ region }: { region: 'usa' | 'brazil' }) {
     };
 
     fetchAppointments();
-  }, []);
+  }, []);  const { data, error } = await supabase
+  .from('appointments')
+  .select('*')
+  .eq('status', 'pending') // Only show patients who aren't finished yet
+  .order('created_at', { ascending: false });
+
 
   return (
     <div style={{ backgroundColor: '#f4f7f9', minHeight: '100vh', padding: '20px', fontFamily: 'sans-serif' }}>
@@ -98,9 +114,17 @@ export default function Dashboard({ region }: { region: 'usa' | 'brazil' }) {
                           Confirmed
                         </span>
                       </td>
-                    </tr>
+                    </tr> <td style={{ padding: '12px' }}>
+  <button 
+    onClick={() => markComplete(appt.id)}
+    style={{ backgroundColor: '#2ecc71', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px' }}
+  >
+    Complete
+  </button>
+</td>
+
                   ))
-                ) : (
+                ) : ( 
                   <tr>
                     <td colSpan={3} style={{ padding: '30px', textAlign: 'center', color: '#95a5a6' }}>
                       No live appointments found.
