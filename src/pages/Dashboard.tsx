@@ -1,57 +1,75 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
-export default function Dashboard({ region }: { region: 'usa' | 'brazil' }) {
-  const isUSA = region === 'usa';
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: isUSA ? "Dr. Michael Kelvin" : "Dr. Lucas Felix Rossi",
-    email: isUSA ? "michaellkevin9@gmail.com" : "derojulien85@gmail.com",
-    specialty: isUSA ? "Orthopedic Surgery" : "Bariatric Surgery"
-  });
+export default function Dashboard() {
+  const [livePatients, setLivePatients] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const patients = isUSA ? [
-    { name: "James Wilson", time: "08:30 AM", procedure: "Hip Arthroplasty", status: "In Theater" },
-    { name: "Sarah Connor", time: "02:15 PM", procedure: "Spinal Fusion", status: "Scheduled" }
-  ] : [
-    { name: "Carlos Silva", time: "07:00 AM", procedure: "Gastric Bypass", status: "Recovery" },
-    { name: "Beatriz Souza", time: "09:45 AM", procedure: "Sleeve Gastrectomy", status: "In Theater" }
-  ];
+  // Profile data (You can change these to your name!)
+  const profile = {
+    name: "Dr. Michael Kelvin",
+    email: "michaellkevin9@gmail.com",
+    specialty: "Lead Physician"
+  };
+
+  // Fetch real data from Supabase
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('appointments')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Connection Error:", error.message);
+      } else {
+        setLivePatients(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchAppointments();
+  }, []);
 
   return (
     <div style={{ backgroundColor: '#f4f7f9', minHeight: '100vh', padding: '20px', fontFamily: 'sans-serif' }}>
-      <header style={{ backgroundColor: '#003366', color: 'white', padding: '20px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Avangard {isUSA ? 'USA' : 'Brasil'} Portal</h2>
-        <button onClick={() => window.location.href='/admin'} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px' }}>Logout</button>
-      </header>
-
-      <div style={{ marginTop: '20px', backgroundColor: 'white', padding: '25px', borderRadius: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-          <h3>Provider Profile</h3>
-          <button onClick={() => setIsEditing(!isEditing)} style={{ background: '#003366', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '5px' }}>
-            {isEditing ? 'Save' : 'Edit'}
-          </button>
-        </div>
-        {isEditing ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <input value={profile.name} onChange={(e) => setProfile({...profile, name: e.target.value})} style={{padding:'8px'}} />
-            <input value={profile.email} onChange={(e) => setProfile({...profile, email: e.target.value})} style={{padding:'8px'}} />
-          </div>
-        ) : (
-          <div>
-            <p><strong>Name:</strong> {profile.name}</p>
-            <p><strong>Specialty:</strong> {profile.specialty}</p>
-          </div>
-        )}
+      {/* Header Section */}
+      <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '10px', marginBottom: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <h1 style={{ color: '#2c3e50', margin: 0 }}>Staff Dashboard</h1>
+        <p style={{ color: '#7f8c8d' }}>Welcome back, <strong>{profile.name}</strong> ({profile.specialty})</p>
       </div>
 
-      <div style={{ marginTop: '20px', backgroundColor: 'white', padding: '25px', borderRadius: '12px' }}>
-        <h3>Schedule</h3>
-        <table style={{ width: '100%', textAlign: 'left' }}>
-          <thead><tr style={{borderBottom:'1px solid #eee'}}><th>Patient</th><th>Status</th></tr></thead>
+      {/* Patients Table Section */}
+      <div style={{ backgroundColor: '#fff', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <div style={{ padding: '15px', backgroundColor: '#3498db', color: '#fff', fontWeight: 'bold' }}>
+          Current Appointments
+        </div>
+        
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#ecf0f1', textAlign: 'left' }}>
+              <th style={{ padding: '12px' }}>Patient Name</th>
+              <th style={{ padding: '12px' }}>Service</th>
+              <th style={{ padding: '12px' }}>Status</th>
+            </tr>
+          </thead>
           <tbody>
-            {patients.map((p, i) => (
-              <tr key={i} style={{borderBottom:'1px solid #eee'}}><td style={{padding:'10px 0'}}>{p.name}</td><td>{p.status}</td></tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan={3} style={{ padding: '20px', textAlign: 'center' }}>Loading live data...</td></tr>
+            ) : livePatients.length > 0 ? (
+              livePatients.map((appt) => (
+                <tr key={appt.id} style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px' }}>{appt.patient_name}</td>
+                  <td style={{ padding: '12px' }}>{appt.service || 'General Consultation'}</td>
+                  <td style={{ padding: '12px' }}>
+                    <span style={{ backgroundColor: '#2ecc71', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>Confirmed</span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan={3} style={{ padding: '20px', textAlign: 'center' }}>No appointments found.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
