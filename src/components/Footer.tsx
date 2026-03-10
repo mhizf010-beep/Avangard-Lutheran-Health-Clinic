@@ -41,7 +41,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links */}<a href="/dashboard" className="text-gray-400 hover:text-white transition-colors">Staff Portal Login</a>
+
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-blue-100">
